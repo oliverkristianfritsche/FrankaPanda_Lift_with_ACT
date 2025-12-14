@@ -1,0 +1,156 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Isaac Lab / Isaac Sim specific
+# logs/
+outputs/
+runs/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.npy
+*.npz
+
+# Tensorboard
+events.out.tfevents.*
+
+# Weights & Biases
+wandb/
+
+# Videos and images from training
+videos/
+*.mp4
+*.avi
+
+# Keep media folder GIF
+!media/*.gif
+
+# USD files (can be large)
+*.usd
+*.usda
+*.usdc
+*.usdz
+
+# Nucleus cache
+.nucleus/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# misc
+${data}
+data/demos
+
+# Utility scripts (not core functionality)
+scripts/generate_figures.py
+scripts/generate_report_figures.py
+scripts/extract_demo_media.py
+scripts/view_demos_web.py
+scripts/list_envs.py
+scripts/random_agent.py
+scripts/zero_agent.py
+scripts/test_rewards.py
+
+# Large ACT checkpoints (use Git LFS or external hosting)
+logs/act/checkpoints/*/checkpoint_*.pt
+logs/act/checkpoints/*/best_model.pt
+
+# Keep these small files:
+# - logs/skrl/*/checkpoints/best_agent.pt (820KB - needed for demo generation)
+# - logs/act/checkpoints/*/normalizer.pt (4KB)
+# - logs/act/checkpoints/*/config.json
+# - logs/act/checkpoints/*/eval_results_*.json
