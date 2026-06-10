@@ -1,0 +1,123 @@
+[
+  {
+    "epoch": 1,
+    "episodes": 30,
+    "place_success": 7,
+    "place_rate": 23.333333333333332,
+    "lift_success": 9,
+    "lift_rate": 30.0,
+    "success": 7,
+    "success_rate": 23.333333333333332,
+    "ckpt": "checkpoint_0001.pt"
+  },
+  {
+    "epoch": 2,
+    "episodes": 30,
+    "place_success": 16,
+    "place_rate": 53.333333333333336,
+    "lift_success": 18,
+    "lift_rate": 60.0,
+    "success": 16,
+    "success_rate": 53.333333333333336,
+    "ckpt": "checkpoint_0002.pt"
+  },
+  {
+    "epoch": 3,
+    "episodes": 30,
+    "place_success": 14,
+    "place_rate": 46.666666666666664,
+    "lift_success": 27,
+    "lift_rate": 90.0,
+    "success": 14,
+    "success_rate": 46.666666666666664,
+    "ckpt": "checkpoint_0003.pt"
+  },
+  {
+    "epoch": 4,
+    "episodes": 30,
+    "place_success": 11,
+    "place_rate": 36.666666666666664,
+    "lift_success": 19,
+    "lift_rate": 63.333333333333336,
+    "success": 11,
+    "success_rate": 36.666666666666664,
+    "ckpt": "checkpoint_0004.pt"
+  },
+  {
+    "epoch": 5,
+    "episodes": 30,
+    "place_success": 9,
+    "place_rate": 30.0,
+    "lift_success": 20,
+    "lift_rate": 66.66666666666667,
+    "success": 9,
+    "success_rate": 30.0,
+    "ckpt": "checkpoint_0005.pt"
+  },
+  {
+    "epoch": 6,
+    "episodes": 30,
+    "place_success": 18,
+    "place_rate": 60.0,
+    "lift_success": 22,
+    "lift_rate": 73.33333333333333,
+    "success": 18,
+    "success_rate": 60.0,
+    "ckpt": "checkpoint_0006.pt"
+  },
+  {
+    "epoch": 7,
+    "episodes": 30,
+    "place_success": 10,
+    "place_rate": 33.333333333333336,
+    "lift_success": 17,
+    "lift_rate": 56.666666666666664,
+    "success": 10,
+    "success_rate": 33.333333333333336,
+    "ckpt": "checkpoint_0007.pt"
+  },
+  {
+    "epoch": 8,
+    "episodes": 30,
+    "place_success": 6,
+    "place_rate": 20.0,
+    "lift_success": 13,
+    "lift_rate": 43.333333333333336,
+    "success": 6,
+    "success_rate": 20.0,
+    "ckpt": "checkpoint_0008.pt"
+  },
+  {
+    "epoch": 9,
+    "episodes": 30,
+    "place_success": 10,
+    "place_rate": 33.333333333333336,
+    "lift_success": 19,
+    "lift_rate": 63.333333333333336,
+    "success": 10,
+    "success_rate": 33.333333333333336,
+    "ckpt": "checkpoint_0009.pt"
+  },
+  {
+    "epoch": 10,
+    "episodes": 30,
+    "place_success": 16,
+    "place_rate": 53.333333333333336,
+    "lift_success": 20,
+    "lift_rate": 66.66666666666667,
+    "success": 16,
+    "success_rate": 53.333333333333336,
+    "ckpt": "checkpoint_0010.pt"
+  },
+  {
+    "epoch": 10,
+    "episodes": 30,
+    "place_success": 11,
+    "place_rate": 36.666666666666664,
+    "lift_success": 21,
+    "lift_rate": 70.0,
+    "success": 11,
+    "success_rate": 36.666666666666664,
+    "ckpt": "best_model.pt"
+  }
+]

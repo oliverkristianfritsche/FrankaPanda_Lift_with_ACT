@@ -1,0 +1,30 @@
+{
+  "qpos_dim": 11,
+  "action_dim": 8,
+  "lr": 5e-05,
+  "lr_backbone": 5e-05,
+  "backbone": "resnet18",
+  "enc_layers": 4,
+  "dec_layers": 7,
+  "dim_feedforward": 3200,
+  "hidden_dim": 512,
+  "dropout": 0.1,
+  "nheads": 8,
+  "num_queries": 50,
+  "kl_weight": 10.0,
+  "camera_names": [
+    "camera",
+    "wrist"
+  ],
+  "state_dim": 11,
+  "ckpt_dir": "/workspace/repo/logs/act/checkpoints/act_20260610_035108",
+  "policy_class": "ACT",
+  "task_name": "lift",
+  "seed": 42,
+  "num_epochs": 8,
+  "batch_size": 32,
+  "epochs": 8,
+  "num_params": 83888265,
+  "num_demos": 720,
+  "num_samples": 144000
+}

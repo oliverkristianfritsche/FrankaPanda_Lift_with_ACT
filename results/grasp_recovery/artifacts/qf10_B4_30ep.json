@@ -1,0 +1,13 @@
+[
+  {
+    "epoch": 4,
+    "episodes": 30,
+    "place_success": 9,
+    "place_rate": 30.0,
+    "lift_success": 24,
+    "lift_rate": 80.0,
+    "success": 9,
+    "success_rate": 30.0,
+    "ckpt": "checkpoint_0004.pt"
+  }
+]

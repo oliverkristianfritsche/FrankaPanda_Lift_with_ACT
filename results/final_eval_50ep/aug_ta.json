@@ -1,0 +1,13 @@
+[
+  {
+    "epoch": 4364,
+    "episodes": 50,
+    "place_success": 7,
+    "place_rate": 14.0,
+    "lift_success": 7,
+    "lift_rate": 14.0,
+    "success": 7,
+    "success_rate": 14.0,
+    "ckpt": "best_model.pt"
+  }
+]

@@ -1,0 +1,802 @@
+[
+  {
+    "ep": 0,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.337,
+    "close_t": 23,
+    "close_geo": {
+      "lateral_mm": 28.6,
+      "vertical_mm": -2.3,
+      "norm_mm": 28.7
+    },
+    "min_ee_cube_mm": 28.1,
+    "min_ee_cube_t": 26,
+    "cube_xy_disturbed_mm": 126.4
+  },
+  {
+    "ep": 1,
+    "outcome": "GRASPED",
+    "placed": true,
+    "lifted": true,
+    "min_goal_dist": 0.006,
+    "close_t": 23,
+    "close_geo": {
+      "lateral_mm": 8.6,
+      "vertical_mm": -5.4,
+      "norm_mm": 10.2
+    },
+    "min_ee_cube_mm": 8.4,
+    "min_ee_cube_t": 45,
+    "cube_xy_disturbed_mm": 80.9
+  },
+  {
+    "ep": 2,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.298,
+    "close_t": 25,
+    "close_geo": {
+      "lateral_mm": 62.5,
+      "vertical_mm": 23.3,
+      "norm_mm": 66.7
+    },
+    "min_ee_cube_mm": 52.0,
+    "min_ee_cube_t": 31,
+    "cube_xy_disturbed_mm": 188.1
+  },
+  {
+    "ep": 3,
+    "outcome": "GRASPED",
+    "placed": true,
+    "lifted": true,
+    "min_goal_dist": 0.019,
+    "close_t": 20,
+    "close_geo": {
+      "lateral_mm": 17.8,
+      "vertical_mm": 5.2,
+      "norm_mm": 18.5
+    },
+    "min_ee_cube_mm": 18.5,
+    "min_ee_cube_t": 22,
+    "cube_xy_disturbed_mm": 170.4
+  },
+  {
+    "ep": 4,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.272,
+    "close_t": 22,
+    "close_geo": {
+      "lateral_mm": 54.1,
+      "vertical_mm": 26.4,
+      "norm_mm": 60.2
+    },
+    "min_ee_cube_mm": 55.7,
+    "min_ee_cube_t": 23,
+    "cube_xy_disturbed_mm": 248.7
+  },
+  {
+    "ep": 5,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.455,
+    "close_t": 27,
+    "close_geo": {
+      "lateral_mm": 38.6,
+      "vertical_mm": 42.7,
+      "norm_mm": 57.5
+    },
+    "min_ee_cube_mm": 57.5,
+    "min_ee_cube_t": 29,
+    "cube_xy_disturbed_mm": 58.9
+  },
+  {
+    "ep": 6,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.348,
+    "close_t": 24,
+    "close_geo": {
+      "lateral_mm": 59.1,
+      "vertical_mm": -4.6,
+      "norm_mm": 59.2
+    },
+    "min_ee_cube_mm": 57.5,
+    "min_ee_cube_t": 27,
+    "cube_xy_disturbed_mm": 197.0
+  },
+  {
+    "ep": 7,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.36,
+    "close_t": 23,
+    "close_geo": {
+      "lateral_mm": 36.5,
+      "vertical_mm": 22.4,
+      "norm_mm": 42.8
+    },
+    "min_ee_cube_mm": 38.2,
+    "min_ee_cube_t": 26,
+    "cube_xy_disturbed_mm": 70.0
+  },
+  {
+    "ep": 8,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.295,
+    "close_t": 24,
+    "close_geo": {
+      "lateral_mm": 48.7,
+      "vertical_mm": -0.2,
+      "norm_mm": 48.7
+    },
+    "min_ee_cube_mm": 45.7,
+    "min_ee_cube_t": 27,
+    "cube_xy_disturbed_mm": 41.4
+  },
+  {
+    "ep": 9,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.34,
+    "close_t": 21,
+    "close_geo": {
+      "lateral_mm": 111.8,
+      "vertical_mm": -7.5,
+      "norm_mm": 112.1
+    },
+    "min_ee_cube_mm": 106.1,
+    "min_ee_cube_t": 25,
+    "cube_xy_disturbed_mm": 74.5
+  },
+  {
+    "ep": 10,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.258,
+    "close_t": 21,
+    "close_geo": {
+      "lateral_mm": 49.5,
+      "vertical_mm": 23.4,
+      "norm_mm": 54.8
+    },
+    "min_ee_cube_mm": 54.6,
+    "min_ee_cube_t": 22,
+    "cube_xy_disturbed_mm": 127.3
+  },
+  {
+    "ep": 11,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.322,
+    "close_t": 24,
+    "close_geo": {
+      "lateral_mm": 26.6,
+      "vertical_mm": -11.6,
+      "norm_mm": 29.0
+    },
+    "min_ee_cube_mm": 25.9,
+    "min_ee_cube_t": 28,
+    "cube_xy_disturbed_mm": 272.5
+  },
+  {
+    "ep": 12,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.335,
+    "close_t": 22,
+    "close_geo": {
+      "lateral_mm": 24.9,
+      "vertical_mm": 9.6,
+      "norm_mm": 26.6
+    },
+    "min_ee_cube_mm": 26.6,
+    "min_ee_cube_t": 24,
+    "cube_xy_disturbed_mm": 253.7
+  },
+  {
+    "ep": 13,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.442,
+    "close_t": 21,
+    "close_geo": {
+      "lateral_mm": 75.8,
+      "vertical_mm": -4.2,
+      "norm_mm": 75.9
+    },
+    "min_ee_cube_mm": 72.8,
+    "min_ee_cube_t": 24,
+    "cube_xy_disturbed_mm": 198.9
+  },
+  {
+    "ep": 14,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.342,
+    "close_t": 24,
+    "close_geo": {
+      "lateral_mm": 83.5,
+      "vertical_mm": -6.0,
+      "norm_mm": 83.7
+    },
+    "min_ee_cube_mm": 77.3,
+    "min_ee_cube_t": 25,
+    "cube_xy_disturbed_mm": 180.4
+  },
+  {
+    "ep": 15,
+    "outcome": "GRASPED",
+    "placed": true,
+    "lifted": true,
+    "min_goal_dist": 0.024,
+    "close_t": 27,
+    "close_geo": {
+      "lateral_mm": 8.9,
+      "vertical_mm": -4.4,
+      "norm_mm": 9.9
+    },
+    "min_ee_cube_mm": 8.7,
+    "min_ee_cube_t": 30,
+    "cube_xy_disturbed_mm": 120.5
+  },
+  {
+    "ep": 16,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.402,
+    "close_t": 20,
+    "close_geo": {
+      "lateral_mm": 34.2,
+      "vertical_mm": 14.8,
+      "norm_mm": 37.2
+    },
+    "min_ee_cube_mm": 35.3,
+    "min_ee_cube_t": 21,
+    "cube_xy_disturbed_mm": 262.8
+  },
+  {
+    "ep": 17,
+    "outcome": "GRASPED",
+    "placed": true,
+    "lifted": true,
+    "min_goal_dist": 0.018,
+    "close_t": 0,
+    "close_geo": {
+      "lateral_mm": 241.9,
+      "vertical_mm": 371.5,
+      "norm_mm": 443.3
+    },
+    "min_ee_cube_mm": 13.0,
+    "min_ee_cube_t": 38,
+    "cube_xy_disturbed_mm": 60.8
+  },
+  {
+    "ep": 18,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.38,
+    "close_t": 24,
+    "close_geo": {
+      "lateral_mm": 38.6,
+      "vertical_mm": 26.8,
+      "norm_mm": 47.0
+    },
+    "min_ee_cube_mm": 31.7,
+    "min_ee_cube_t": 28,
+    "cube_xy_disturbed_mm": 24.1
+  },
+  {
+    "ep": 19,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.462,
+    "close_t": 25,
+    "close_geo": {
+      "lateral_mm": 76.0,
+      "vertical_mm": -9.0,
+      "norm_mm": 76.6
+    },
+    "min_ee_cube_mm": 65.1,
+    "min_ee_cube_t": 30,
+    "cube_xy_disturbed_mm": 90.7
+  },
+  {
+    "ep": 20,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.522,
+    "close_t": 25,
+    "close_geo": {
+      "lateral_mm": 57.6,
+      "vertical_mm": -3.4,
+      "norm_mm": 57.7
+    },
+    "min_ee_cube_mm": 56.7,
+    "min_ee_cube_t": 26,
+    "cube_xy_disturbed_mm": 300.4
+  },
+  {
+    "ep": 21,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.342,
+    "close_t": 26,
+    "close_geo": {
+      "lateral_mm": 34.9,
+      "vertical_mm": -5.5,
+      "norm_mm": 35.3
+    },
+    "min_ee_cube_mm": 30.6,
+    "min_ee_cube_t": 27,
+    "cube_xy_disturbed_mm": 76.3
+  },
+  {
+    "ep": 22,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.489,
+    "close_t": 22,
+    "close_geo": {
+      "lateral_mm": 146.7,
+      "vertical_mm": -4.4,
+      "norm_mm": 146.8
+    },
+    "min_ee_cube_mm": 135.0,
+    "min_ee_cube_t": 26,
+    "cube_xy_disturbed_mm": 77.1
+  },
+  {
+    "ep": 23,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.385,
+    "close_t": 22,
+    "close_geo": {
+      "lateral_mm": 105.2,
+      "vertical_mm": -2.8,
+      "norm_mm": 105.2
+    },
+    "min_ee_cube_mm": 98.6,
+    "min_ee_cube_t": 26,
+    "cube_xy_disturbed_mm": 226.1
+  },
+  {
+    "ep": 24,
+    "outcome": "GRASPED",
+    "placed": true,
+    "lifted": true,
+    "min_goal_dist": 0.021,
+    "close_t": 0,
+    "close_geo": {
+      "lateral_mm": 136.2,
+      "vertical_mm": 387.9,
+      "norm_mm": 411.1
+    },
+    "min_ee_cube_mm": 16.2,
+    "min_ee_cube_t": 28,
+    "cube_xy_disturbed_mm": 93.3
+  },
+  {
+    "ep": 25,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.401,
+    "close_t": 20,
+    "close_geo": {
+      "lateral_mm": 22.6,
+      "vertical_mm": 21.8,
+      "norm_mm": 31.3
+    },
+    "min_ee_cube_mm": 31.3,
+    "min_ee_cube_t": 22,
+    "cube_xy_disturbed_mm": 68.6
+  },
+  {
+    "ep": 26,
+    "outcome": "GRASPED",
+    "placed": true,
+    "lifted": true,
+    "min_goal_dist": 0.008,
+    "close_t": 0,
+    "close_geo": {
+      "lateral_mm": 124.8,
+      "vertical_mm": 384.5,
+      "norm_mm": 404.3
+    },
+    "min_ee_cube_mm": 8.9,
+    "min_ee_cube_t": 30,
+    "cube_xy_disturbed_mm": 219.1
+  },
+  {
+    "ep": 27,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.378,
+    "close_t": 23,
+    "close_geo": {
+      "lateral_mm": 38.8,
+      "vertical_mm": 58.5,
+      "norm_mm": 70.2
+    },
+    "min_ee_cube_mm": 27.0,
+    "min_ee_cube_t": 27,
+    "cube_xy_disturbed_mm": 128.1
+  },
+  {
+    "ep": 28,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.371,
+    "close_t": 21,
+    "close_geo": {
+      "lateral_mm": 59.9,
+      "vertical_mm": -0.6,
+      "norm_mm": 59.9
+    },
+    "min_ee_cube_mm": 59.9,
+    "min_ee_cube_t": 23,
+    "cube_xy_disturbed_mm": 158.5
+  },
+  {
+    "ep": 29,
+    "outcome": "GRASPED",
+    "placed": true,
+    "lifted": true,
+    "min_goal_dist": 0.014,
+    "close_t": 0,
+    "close_geo": {
+      "lateral_mm": 230.1,
+      "vertical_mm": 369.2,
+      "norm_mm": 435.0
+    },
+    "min_ee_cube_mm": 13.1,
+    "min_ee_cube_t": 28,
+    "cube_xy_disturbed_mm": 247.2
+  },
+  {
+    "ep": 30,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.262,
+    "close_t": 25,
+    "close_geo": {
+      "lateral_mm": 41.3,
+      "vertical_mm": -4.2,
+      "norm_mm": 41.5
+    },
+    "min_ee_cube_mm": 41.5,
+    "min_ee_cube_t": 27,
+    "cube_xy_disturbed_mm": 63.1
+  },
+  {
+    "ep": 31,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.355,
+    "close_t": 23,
+    "close_geo": {
+      "lateral_mm": 42.8,
+      "vertical_mm": -3.6,
+      "norm_mm": 42.9
+    },
+    "min_ee_cube_mm": 42.9,
+    "min_ee_cube_t": 25,
+    "cube_xy_disturbed_mm": 135.0
+  },
+  {
+    "ep": 32,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.374,
+    "close_t": 24,
+    "close_geo": {
+      "lateral_mm": 26.9,
+      "vertical_mm": 23.0,
+      "norm_mm": 35.4
+    },
+    "min_ee_cube_mm": 28.6,
+    "min_ee_cube_t": 25,
+    "cube_xy_disturbed_mm": 97.8
+  },
+  {
+    "ep": 33,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.362,
+    "close_t": 0,
+    "close_geo": {
+      "lateral_mm": 213.7,
+      "vertical_mm": 373.6,
+      "norm_mm": 430.3
+    },
+    "min_ee_cube_mm": 55.9,
+    "min_ee_cube_t": 28,
+    "cube_xy_disturbed_mm": 127.0
+  },
+  {
+    "ep": 34,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.369,
+    "close_t": 21,
+    "close_geo": {
+      "lateral_mm": 41.6,
+      "vertical_mm": 22.6,
+      "norm_mm": 47.3
+    },
+    "min_ee_cube_mm": 41.7,
+    "min_ee_cube_t": 21,
+    "cube_xy_disturbed_mm": 53.6
+  },
+  {
+    "ep": 35,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.356,
+    "close_t": 23,
+    "close_geo": {
+      "lateral_mm": 53.3,
+      "vertical_mm": 10.0,
+      "norm_mm": 54.2
+    },
+    "min_ee_cube_mm": 54.2,
+    "min_ee_cube_t": 25,
+    "cube_xy_disturbed_mm": 247.3
+  },
+  {
+    "ep": 36,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.346,
+    "close_t": 20,
+    "close_geo": {
+      "lateral_mm": 86.9,
+      "vertical_mm": -3.3,
+      "norm_mm": 87.0
+    },
+    "min_ee_cube_mm": 80.3,
+    "min_ee_cube_t": 24,
+    "cube_xy_disturbed_mm": 104.7
+  },
+  {
+    "ep": 37,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.332,
+    "close_t": 0,
+    "close_geo": {
+      "lateral_mm": 31.5,
+      "vertical_mm": 383.5,
+      "norm_mm": 384.8
+    },
+    "min_ee_cube_mm": 88.4,
+    "min_ee_cube_t": 27,
+    "cube_xy_disturbed_mm": 311.4
+  },
+  {
+    "ep": 38,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.433,
+    "close_t": 24,
+    "close_geo": {
+      "lateral_mm": 55.2,
+      "vertical_mm": 7.9,
+      "norm_mm": 55.7
+    },
+    "min_ee_cube_mm": 51.6,
+    "min_ee_cube_t": 27,
+    "cube_xy_disturbed_mm": 62.3
+  },
+  {
+    "ep": 39,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.353,
+    "close_t": 0,
+    "close_geo": {
+      "lateral_mm": 239.9,
+      "vertical_mm": 385.1,
+      "norm_mm": 453.7
+    },
+    "min_ee_cube_mm": 44.3,
+    "min_ee_cube_t": 31,
+    "cube_xy_disturbed_mm": 173.0
+  },
+  {
+    "ep": 40,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.328,
+    "close_t": 0,
+    "close_geo": {
+      "lateral_mm": 289.4,
+      "vertical_mm": 374.7,
+      "norm_mm": 473.5
+    },
+    "min_ee_cube_mm": 98.3,
+    "min_ee_cube_t": 30,
+    "cube_xy_disturbed_mm": 190.9
+  },
+  {
+    "ep": 41,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.223,
+    "close_t": 20,
+    "close_geo": {
+      "lateral_mm": 36.6,
+      "vertical_mm": 28.8,
+      "norm_mm": 46.6
+    },
+    "min_ee_cube_mm": 40.7,
+    "min_ee_cube_t": 21,
+    "cube_xy_disturbed_mm": 84.6
+  },
+  {
+    "ep": 42,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.489,
+    "close_t": 22,
+    "close_geo": {
+      "lateral_mm": 47.9,
+      "vertical_mm": -7.9,
+      "norm_mm": 48.5
+    },
+    "min_ee_cube_mm": 44.2,
+    "min_ee_cube_t": 26,
+    "cube_xy_disturbed_mm": 189.0
+  },
+  {
+    "ep": 43,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.337,
+    "close_t": 26,
+    "close_geo": {
+      "lateral_mm": 21.6,
+      "vertical_mm": -5.8,
+      "norm_mm": 22.4
+    },
+    "min_ee_cube_mm": 22.4,
+    "min_ee_cube_t": 28,
+    "cube_xy_disturbed_mm": 152.5
+  },
+  {
+    "ep": 44,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.432,
+    "close_t": 23,
+    "close_geo": {
+      "lateral_mm": 35.3,
+      "vertical_mm": -3.2,
+      "norm_mm": 35.4
+    },
+    "min_ee_cube_mm": 35.4,
+    "min_ee_cube_t": 25,
+    "cube_xy_disturbed_mm": 260.8
+  },
+  {
+    "ep": 45,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.322,
+    "close_t": 25,
+    "close_geo": {
+      "lateral_mm": 34.7,
+      "vertical_mm": 35.2,
+      "norm_mm": 49.4
+    },
+    "min_ee_cube_mm": 48.8,
+    "min_ee_cube_t": 26,
+    "cube_xy_disturbed_mm": 115.4
+  },
+  {
+    "ep": 46,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.323,
+    "close_t": 24,
+    "close_geo": {
+      "lateral_mm": 35.7,
+      "vertical_mm": -3.2,
+      "norm_mm": 35.9
+    },
+    "min_ee_cube_mm": 35.9,
+    "min_ee_cube_t": 26,
+    "cube_xy_disturbed_mm": 57.5
+  },
+  {
+    "ep": 47,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.372,
+    "close_t": 21,
+    "close_geo": {
+      "lateral_mm": 92.9,
+      "vertical_mm": 2.4,
+      "norm_mm": 93.0
+    },
+    "min_ee_cube_mm": 89.6,
+    "min_ee_cube_t": 22,
+    "cube_xy_disturbed_mm": 114.2
+  },
+  {
+    "ep": 48,
+    "outcome": "GRASPED",
+    "placed": true,
+    "lifted": true,
+    "min_goal_dist": 0.024,
+    "close_t": 21,
+    "close_geo": {
+      "lateral_mm": 17.0,
+      "vertical_mm": -4.2,
+      "norm_mm": 17.5
+    },
+    "min_ee_cube_mm": 17.5,
+    "min_ee_cube_t": 23,
+    "cube_xy_disturbed_mm": 417.9
+  },
+  {
+    "ep": 49,
+    "outcome": "TOUCHED_NOT_GRASPED",
+    "placed": false,
+    "lifted": false,
+    "min_goal_dist": 0.343,
+    "close_t": 25,
+    "close_geo": {
+      "lateral_mm": 48.4,
+      "vertical_mm": 10.1,
+      "norm_mm": 49.4
+    },
+    "min_ee_cube_mm": 47.3,
+    "min_ee_cube_t": 28,
+    "cube_xy_disturbed_mm": 359.1
+  }
+]

@@ -38,9 +38,10 @@ import json
 import torch
 import numpy as np
 
-# Add ACT paths
-sys.path.insert(0, "/workspace/frankapanda/Lift/act")
-sys.path.insert(0, "/workspace/frankapanda/Lift/act/detr")
+# Add ACT paths (repo root = parent of this script's dir; `act/` at <repo>/act).
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(REPO_ROOT, "act"))
+sys.path.insert(0, os.path.join(REPO_ROOT, "act", "detr"))
 
 from policy import ACTPolicy
 
@@ -125,7 +126,7 @@ def main():
     # qpos indices
     QPOS_INDICES = list(range(0, 7))  # Joint positions
     chunk_size = config.get('num_queries', 100)
-    camera_names = config.get('camera_names', ['camera', 'camera2', 'camera3'])
+    camera_names = config.get('camera_names', ['camera', 'wrist'])
     
     # Run episodes
     total_successes = 0

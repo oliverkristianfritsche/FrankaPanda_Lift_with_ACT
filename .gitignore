@@ -154,3 +154,6 @@ logs/act/checkpoints/*/best_model.pt
 # - logs/act/checkpoints/*/normalizer.pt (4KB)
 # - logs/act/checkpoints/*/config.json
 # - logs/act/checkpoints/*/eval_results_*.json
+
+# Local Claude Code conventions file (personal, never committed)
+CLAUDE.md

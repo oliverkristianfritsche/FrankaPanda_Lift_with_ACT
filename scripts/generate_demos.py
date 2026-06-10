@@ -13,20 +13,24 @@ from datetime import datetime
 
 from isaaclab.app import AppLauncher
 
-# Visual condition mapping
+# Visual condition mapping (the previously-unregistered "camera" condition removed)
 CONDITION_TASKS = {
     "baseline": "Template-Lift-Cube-Franka-Demo-Baseline-v0",
     "lighting": "Template-Lift-Cube-Franka-Demo-Lighting-v0",
     "texture": "Template-Lift-Cube-Franka-Demo-Texture-v0",
-    "camera": "Template-Lift-Cube-Franka-Demo-Camera-v0",
     "combined": "Template-Lift-Cube-Franka-Demo-Combined-v0",
 }
+
+# Cameras to capture, in order. Index 0 ("camera") is the primary scene view
+# stored under the backward-compatible `images` key; "wrist" is the hand-mounted
+# camera. Must match visual_randomization.CAMERA_NAMES.
+CAMERA_NAMES = ["camera", "wrist"]
 
 # Add argparse arguments
 parser = argparse.ArgumentParser(description="Generate demonstrations from trained RL policy")
 parser.add_argument("--task", type=str, default=None, help="Task name (overrides --condition)")
 parser.add_argument("--condition", type=str, default="baseline", 
-                    choices=["baseline", "lighting", "texture", "camera", "combined", "all"],
+                    choices=["baseline", "lighting", "texture", "combined", "all"],
                     help="Visual randomization condition")
 parser.add_argument("--checkpoint", type=str, required=True, help="Path to trained policy checkpoint")
 parser.add_argument("--num_demos", type=int, default=100, help="Number of successful demos to collect")
@@ -40,6 +44,32 @@ parser.add_argument("--goal_threshold", type=float, default=0.05,
                     help="Distance threshold (m) to consider object at goal position")
 parser.add_argument("--min_goal_steps", type=int, default=10, 
                     help="Minimum consecutive steps object must be at goal")
+parser.add_argument("--target_minutes", type=float, default=None,
+                    help="If set, collect until total demo time (sum of successful episode "
+                         "lengths) reaches this many minutes, overriding --num_demos as the stop "
+                         "criterion. Use for the '>=30 min of oracle demos' requirement.")
+# DART-style recovery-data collection: EXECUTE oracle_mean + OU noise on the ARM
+# joints, but STORE the clean oracle mean as the action label. The state-feedback
+# oracle keeps correcting the perturbed state, so successful episodes densely cover
+# off-nominal approach states WITH corrective labels — exactly the data a success-
+# filtered deterministic oracle never produces, and the reason a 1cm approach error
+# at the grasp is currently unrecoverable for ACT.
+parser.add_argument("--noise_std", type=float, default=0.0,
+                    help="Stationary std of OU noise added to the EXECUTED arm action "
+                         "(raw action units; label stays the clean oracle mean). 0 = off.")
+parser.add_argument("--noise_theta", type=float, default=0.15,
+                    help="OU mean-reversion rate (correlation time ~1/theta steps)")
+# Short, task-dense demos: the oracle finishes by ~step 62 worst case and the success
+# latch (10 consecutive at-goal steps) lands by ~72, yet episodes run 250 steps — so
+# ~82% of every recorded demo is the cube parked at the goal. Shorter episodes raise
+# collection throughput; cutting the recording shortly after the success latch keeps
+# the placement approach + a stabilize-at-goal beat without the long hover tail. The
+# success filter still gates every demo, so nothing incomplete can be recorded.
+parser.add_argument("--episode_seconds", type=float, default=None,
+                    help="Override env episode length (s) for collection (default: task cfg)")
+parser.add_argument("--end_after_goal", type=int, default=-1,
+                    help="Cut each RECORDED demo N steps after the success latch (object at "
+                         "goal for min_goal_steps consecutive steps). -1 = record full episode.")
 
 # Append AppLauncher cli args
 AppLauncher.add_app_launcher_args(parser)
@@ -53,6 +83,11 @@ if args_cli.task is None:
 # Enable cameras for image capture
 if args_cli.save_images:
     args_cli.enable_cameras = True
+    # MUST render headless/offscreen. On current Isaac builds, GUI mode
+    # (headless=False) silently returns a frozen frame-0 image for every step
+    # (images decoupled from the moving robot). eval_checkpoints / verify_cams
+    # set headless=True for the same reason; without it the demos are garbage.
+    args_cli.headless = True
 
 # Launch Isaac Sim
 app_launcher = AppLauncher(args_cli)
@@ -118,13 +153,13 @@ def get_camera_images(env) -> dict:
     # Try to get cameras from scene.sensors dict
     if hasattr(scene, 'sensors'):
         for name, sensor in scene.sensors.items():
-            if 'camera' in name.lower():
+            if name in CAMERA_NAMES:
                 rgb = extract_rgb(sensor)
                 if rgb is not None:
                     images[name] = rgb
     
-    # Also check direct attributes (camera, camera2, etc.)
-    for attr in ['camera', 'camera2', 'camera3']:
+    # Fallback: also check direct scene attributes for the configured cameras
+    for attr in CAMERA_NAMES:
         if hasattr(scene, attr):
             camera = getattr(scene, attr)
             if camera is not None and hasattr(camera, 'data'):
@@ -135,9 +170,11 @@ def get_camera_images(env) -> dict:
     return images if images else None
 
 
-def collect_demos(env, agent, num_demos: int, save_images: bool, min_reward: float, min_length: int, 
+def collect_demos(env, agent, num_demos: int, save_images: bool, min_reward: float, min_length: int,
                   unwrapped_env=None, goal_threshold: float = 0.05, min_goal_steps: int = 10,
-                  condition: str = "baseline"):
+                  condition: str = "baseline", target_minutes: float = None, output_path: str = None,
+                  noise_std: float = 0.0, noise_theta: float = 0.15,
+                  end_after_goal: int = -1):
     """Collect successful demonstrations from the environment.
     
     Args:
@@ -193,11 +230,31 @@ def collect_demos(env, agent, num_demos: int, save_images: bool, min_reward: flo
         except ImportError:
             print("Warning: Could not import set_random_texture function")
     
-    demos = []
+    # Incremental HDF5 writer: write each demo to disk as it is collected and free
+    # it from RAM, so collection memory stays ~flat (only the in-progress episodes),
+    # instead of holding the whole dataset (~0.46 MB/timestep) in RAM and OOMing.
+    h5f = None
+    written = 0
+    stat_n = 0
+    obs_sum = obs_sumsq = act_sum = act_sumsq = None
     total_episodes = 0
     successful_episodes = 0
     
-    print(f"Collecting {num_demos} successful demonstrations...")
+    collected_timesteps = 0  # sum of successful-episode lengths (for --target_minutes)
+    base_env = unwrapped_env if unwrapped_env is not None else getattr(env, "unwrapped", env)
+    step_dt = getattr(base_env, "step_dt", 0.02)  # control dt = sim.dt * decimation (50 Hz -> 0.02)
+    target_timesteps = int(round(target_minutes * 60.0 / step_dt)) if target_minutes else None
+
+    def reached_target():
+        if target_timesteps is not None:
+            return collected_timesteps >= target_timesteps
+        return successful_episodes >= num_demos
+
+    if target_timesteps is not None:
+        print(f"Collecting >= {target_minutes:.1f} min of demos "
+              f"(~{target_timesteps} timesteps at {1.0/step_dt:.0f} Hz)...")
+    else:
+        print(f"Collecting {num_demos} successful demonstrations...")
     print(f"Success criteria: object within {goal_threshold}m of goal for {min_goal_steps}+ steps")
     if save_images:
         print("Camera image recording enabled")
@@ -212,7 +269,20 @@ def collect_demos(env, agent, num_demos: int, save_images: bool, min_reward: flo
         if test_images:
             camera_names = list(test_images.keys())
             print(f"Found {len(camera_names)} camera(s): {camera_names}")
-    
+
+    # Open the incremental HDF5 now that camera_names is known.
+    if output_path is not None:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        h5f = h5py.File(output_path, 'w')
+        h5f.attrs['timestamp'] = datetime.now().isoformat()
+        h5f.attrs['condition'] = condition
+        h5f.attrs['noise_std'] = noise_std
+        h5f.attrs['noise_theta'] = noise_theta
+        if camera_names:
+            h5f.attrs['camera_names'] = ','.join(camera_names)
+        h5f.attrs['has_images'] = bool(save_images and camera_names)
+        print(f"Writing demos incrementally to {output_path}")
+
     # Storage for current episodes (per env)
     num_envs = env.num_envs
     episode_data = [{
@@ -225,11 +295,37 @@ def collect_demos(env, agent, num_demos: int, save_images: bool, min_reward: flo
     } for _ in range(num_envs)]
     
     obs, _ = env.reset()
-    
-    while successful_episodes < num_demos:
-        # Get action from policy
+
+    # OU noise state for DART-style recovery collection (arm joints only — the
+    # gripper sign must stay the oracle's clean open/close signal). Stationary
+    # std = noise_std, correlation time ~1/noise_theta steps.
+    ou_state = None
+    ou_sigma_w = 0.0
+    if noise_std > 0:
+        ou_sigma_w = noise_std * float(np.sqrt(1.0 - (1.0 - noise_theta) ** 2))
+        print(f"OU noise on EXECUTED arm actions: std={noise_std}, theta={noise_theta} "
+              f"(labels stay the clean oracle mean)")
+
+    while not reached_target():
+        # Get action from the policy. Use the DETERMINISTIC MEAN action (the
+        # oracle's intended action), NOT a stochastic sample: sampling injects
+        # per-step noise (~scale * policy_std) into the absolute joint targets,
+        # which would be baked into the demos and imitated as jitter by ACT.
         with torch.no_grad():
-            action = agent.act(obs, timestep=0, timesteps=0)[0]
+            act_out = agent.act(obs, timestep=0, timesteps=0)
+            if len(act_out) > 2 and isinstance(act_out[2], dict) and act_out[2].get("mean_actions") is not None:
+                action = act_out[2]["mean_actions"]
+            else:
+                action = act_out[0]
+
+        # Perturb the EXECUTED action only; `action` (the stored label) stays clean.
+        exec_action = action
+        if noise_std > 0:
+            if ou_state is None:
+                ou_state = torch.zeros_like(action[:, :7])
+            ou_state = (1.0 - noise_theta) * ou_state + ou_sigma_w * torch.randn_like(ou_state)
+            exec_action = action.clone()
+            exec_action[:, :7] += ou_state
         
         # Get camera images before storing (from unwrapped env)
         images = get_camera_images(camera_env) if save_images else None
@@ -270,9 +366,12 @@ def collect_demos(env, agent, num_demos: int, save_images: bool, min_reward: flo
                     if cam_name in images:
                         episode_data[i]["images"][cam_name].append(images[cam_name][i].copy())
         
-        # Step environment
-        obs, rewards, terminated, truncated, info = env.step(action)
+        # Step environment with the (possibly noise-perturbed) executed action
+        obs, rewards, terminated, truncated, info = env.step(exec_action)
         dones = terminated | truncated
+        if noise_std > 0 and dones.any():
+            # fresh noise state for envs that just reset
+            ou_state[torch.where(dones)[0]] = 0.0
         
         # Store rewards
         for i in range(num_envs):
@@ -292,34 +391,82 @@ def collect_demos(env, agent, num_demos: int, save_images: bool, min_reward: flo
             # SUCCESS: Object reached goal position and stayed there
             if reached_goal and episode_length >= min_length:
                 successful_episodes += 1
-                
+
+                obs_arr = np.array(ep_data["observations"])
+                # Optionally cut the recording shortly after the success latch: find the
+                # first step where the object has been within goal_threshold of the goal
+                # for min_goal_steps consecutive steps, keep end_after_goal more steps.
+                t_end = episode_length
+                if end_after_goal >= 0:
+                    dist = np.linalg.norm(obs_arr[:, 18:21] - obs_arr[:, 21:24], axis=1)
+                    at_goal = dist < goal_threshold
+                    run_len = 0
+                    for t in range(len(at_goal)):
+                        run_len = run_len + 1 if at_goal[t] else 0
+                        if run_len >= min_goal_steps:
+                            t_end = min(episode_length, t + 1 + end_after_goal)
+                            break
+                episode_length = t_end
+                collected_timesteps += episode_length
+
                 demo = {
-                    "observations": np.array(ep_data["observations"]),
-                    "actions": np.array(ep_data["actions"]),
-                    "rewards": np.array(ep_data["rewards"]),
+                    "observations": obs_arr[:t_end],
+                    "actions": np.array(ep_data["actions"])[:t_end],
+                    "rewards": np.array(ep_data["rewards"])[:t_end],
                     "length": episode_length,
                     "total_reward": total_reward,
                     "reached_goal": True,
                 }
-                
+
                 # Store images from all cameras
                 if save_images and ep_data["images"]:
                     # Store each camera as separate key, and primary as 'images' for backwards compat
                     for cam_name, cam_images in ep_data["images"].items():
                         if cam_images:
-                            demo[f"images_{cam_name}"] = np.array(cam_images)
+                            demo[f"images_{cam_name}"] = np.array(cam_images[:t_end])
                     # Use first camera as default 'images' for backwards compatibility
                     if camera_names and ep_data["images"].get(camera_names[0]):
-                        demo["images"] = np.array(ep_data["images"][camera_names[0]])
+                        demo["images"] = np.array(ep_data["images"][camera_names[0]][:t_end])
                 
-                demos.append(demo)
-                
+                # Write this demo straight to disk and let it fall out of RAM
+                # (instead of accumulating the whole dataset in a list).
+                if h5f is not None:
+                    grp = h5f.create_group(f'demo_{written}')
+                    grp.create_dataset('observations', data=demo['observations'], compression='gzip')
+                    grp.create_dataset('actions', data=demo['actions'], compression='gzip')
+                    grp.create_dataset('rewards', data=demo['rewards'], compression='gzip')
+                    grp.attrs['length'] = demo['length']
+                    grp.attrs['total_reward'] = demo['total_reward']
+                    grp.attrs['success'] = True
+                    # lzf (fast, low-CPU) not gzip: these RGB frames barely gzip-
+                    # compress, so gzip-4 just burns the scarce CPU and spikes load.
+                    if save_images and 'images' in demo:
+                        grp.create_dataset('images', data=demo['images'], compression='lzf')
+                    for cam_name in camera_names:
+                        k = f'images_{cam_name}'
+                        if k in demo:
+                            grp.create_dataset(k, data=demo[k], compression='lzf')
+                    h5f.flush()
+                    # Running stats so we don't have to keep all obs/actions in RAM.
+                    o = demo['observations'].astype(np.float64)
+                    a = demo['actions'].astype(np.float64)
+                    if obs_sum is None:
+                        obs_sum, obs_sumsq = o.sum(0), (o * o).sum(0)
+                        act_sum, act_sumsq = a.sum(0), (a * a).sum(0)
+                    else:
+                        obs_sum += o.sum(0); obs_sumsq += (o * o).sum(0)
+                        act_sum += a.sum(0); act_sumsq += (a * a).sum(0)
+                    stat_n += len(o)
+                written += 1
+
                 # Build image info string
                 img_info = ""
                 if save_images and camera_names:
                     shapes = [f"{name}={demo.get(f'images_{name}', np.array([])).shape}" for name in camera_names]
                     img_info = f", {', '.join(shapes)}"
-                print(f"Demo {successful_episodes}/{num_demos} collected "
+                progress = (f"{collected_timesteps*step_dt/60.0:.1f}/{target_minutes:.1f} min"
+                            if target_timesteps is not None else f"{successful_episodes}/{num_demos} demos")
+                print(f"Demo collected [{progress}] "
                       f"(length={episode_length}, reward={total_reward:.2f}, GOAL REACHED{img_info})")
                 
                 # Change lighting for next demo (if lighting randomization enabled)
@@ -338,7 +485,7 @@ def collect_demos(env, agent, num_demos: int, save_images: bool, min_reward: flo
                         print(f"  New cube (env_0): color=({c[0]:.2f}, {c[1]:.2f}, {c[2]:.2f}), "
                               f"roughness={texture_params['roughness']:.2f}, metallic={texture_params['metallic']:.2f})")
                 
-                if successful_episodes >= num_demos:
+                if reached_target():
                     break
             else:
                 # Failed episode - didn't reach goal
@@ -365,9 +512,21 @@ def collect_demos(env, agent, num_demos: int, save_images: bool, min_reward: flo
     print(f"\nCollection complete!")
     print(f"Total episodes: {total_episodes}")
     print(f"Successful demos: {successful_episodes}")
-    print(f"Success rate: {successful_episodes/total_episodes*100:.1f}%")
-    
-    return demos
+    if total_episodes:
+        print(f"Success rate: {successful_episodes/total_episodes*100:.1f}%")
+
+    if h5f is not None:
+        h5f.attrs['num_demos'] = written
+        h5f.close()
+        size_mb = os.path.getsize(output_path) / (1024 * 1024) if os.path.exists(output_path) else 0
+        print(f"Saved {written} demos incrementally to {output_path} ({size_mb:.1f} MB)")
+        if stat_n > 0:
+            act_mean = act_sum / stat_n
+            act_std = np.sqrt(np.maximum(act_sumsq / stat_n - act_mean ** 2, 0))
+            print(f"  Total timesteps: {stat_n}")
+            print(f"  Action mean: {act_mean}")
+            print(f"  Action std: {act_std}")
+    return written
 
 
 def save_demos_hdf5(demos: list, output_path: str, condition: str, save_images: bool):
@@ -444,7 +603,7 @@ def save_demos_hdf5(demos: list, output_path: str, condition: str, save_images: 
     print(f"  Action std: {all_actions.std(axis=0)}")
 
 
-def create_env(task: str, num_envs: int, device: str = "cuda:0"):
+def create_env(task: str, num_envs: int, device: str = "cuda:0", episode_seconds: float = None):
     """Create Isaac Lab environment from task name."""
     from isaaclab_tasks.utils.parse_cfg import load_cfg_from_registry
     from isaaclab.envs import ManagerBasedRLEnv
@@ -452,6 +611,8 @@ def create_env(task: str, num_envs: int, device: str = "cuda:0"):
     # Load the environment config from registry
     env_cfg = load_cfg_from_registry(task, "env_cfg_entry_point")
     env_cfg.scene.num_envs = num_envs
+    if episode_seconds is not None:
+        env_cfg.episode_length_s = episode_seconds
     
     # Create environment
     env = ManagerBasedRLEnv(cfg=env_cfg)
@@ -468,9 +629,12 @@ def load_experiment_cfg(task: str):
     return agent_cfg
 
 
-def generate_for_condition(condition: str, checkpoint: str, num_demos: int, 
+def generate_for_condition(condition: str, checkpoint: str, num_demos: int,
                             num_envs: int, output_dir: str, save_images: bool,
-                            min_length: int, goal_threshold: float, min_goal_steps: int):
+                            min_length: int, goal_threshold: float, min_goal_steps: int,
+                            target_minutes: float = None,
+                            noise_std: float = 0.0, noise_theta: float = 0.15,
+                            episode_seconds: float = None, end_after_goal: int = -1):
     """Generate demos for a single visual condition."""
     
     task = CONDITION_TASKS[condition]
@@ -480,7 +644,7 @@ def generate_for_condition(condition: str, checkpoint: str, num_demos: int,
     print(f"{'='*60}\n")
     
     # Create environment using Isaac Lab's method
-    env = create_env(task, num_envs)
+    env = create_env(task, num_envs, episode_seconds=episode_seconds)
     
     print(f"Environment: {task}")
     print(f"Observation space: {env.observation_space}")
@@ -492,8 +656,11 @@ def generate_for_condition(condition: str, checkpoint: str, num_demos: int,
     experiment_cfg = load_experiment_cfg(task)
     agent, wrapped_env = load_skrl_agent_from_runner(checkpoint, env, experiment_cfg)
     
-    # Collect demonstrations (use unwrapped env for image capture)
-    demos = collect_demos(
+    # Collect demonstrations, written incrementally to disk (low, flat RAM).
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    tag = f"{condition}_noise{noise_std:g}" if noise_std > 0 else condition
+    output_path = os.path.join(output_dir, f"demos_{tag}_{timestamp}.hdf5")
+    collect_demos(
         env=wrapped_env,
         agent=agent,
         num_demos=num_demos,
@@ -504,13 +671,13 @@ def generate_for_condition(condition: str, checkpoint: str, num_demos: int,
         goal_threshold=goal_threshold,
         min_goal_steps=min_goal_steps,
         condition=condition,  # Pass condition for lighting randomization
+        target_minutes=target_minutes,
+        output_path=output_path,
+        noise_std=noise_std,
+        noise_theta=noise_theta,
+        end_after_goal=end_after_goal,
     )
-    
-    # Save demonstrations
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_path = os.path.join(output_dir, f"demos_{condition}_{timestamp}.hdf5")
-    save_demos_hdf5(demos, output_path, condition, save_images)
-    
+
     # Cleanup
     env.close()
     
@@ -524,7 +691,7 @@ def main():
     if args_cli.condition == "all":
         # Generate demos for all conditions
         print("Generating demos for ALL visual conditions...")
-        conditions = ["baseline", "lighting", "texture", "camera", "combined"]
+        conditions = ["baseline", "lighting", "texture", "combined"]
         output_paths = []
         
         for condition in conditions:
@@ -538,6 +705,11 @@ def main():
                 min_length=args_cli.min_length,
                 goal_threshold=args_cli.goal_threshold,
                 min_goal_steps=args_cli.min_goal_steps,
+                target_minutes=args_cli.target_minutes,
+                noise_std=args_cli.noise_std,
+                noise_theta=args_cli.noise_theta,
+                episode_seconds=args_cli.episode_seconds,
+                end_after_goal=args_cli.end_after_goal,
             )
             output_paths.append(path)
         
@@ -558,8 +730,13 @@ def main():
             min_length=args_cli.min_length,
             goal_threshold=args_cli.goal_threshold,
             min_goal_steps=args_cli.min_goal_steps,
+            target_minutes=args_cli.target_minutes,
+            noise_std=args_cli.noise_std,
+            noise_theta=args_cli.noise_theta,
+            episode_seconds=args_cli.episode_seconds,
+            end_after_goal=args_cli.end_after_goal,
         )
-    
+
     # Cleanup
     simulation_app.close()
 

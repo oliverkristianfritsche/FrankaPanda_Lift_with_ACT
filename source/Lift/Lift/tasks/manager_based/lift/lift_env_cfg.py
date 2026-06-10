@@ -177,12 +177,17 @@ class TerminationsCfg:
 class CurriculumCfg:
     """Curriculum terms for the MDP."""
 
+    # Smoothness curriculum (bumped to train a low-jitter oracle end-to-end).
+    # action_rate penalizes |a_t - a_{t-1}|^2 (the jerk/twitch term) and is the
+    # most targeted lever -> raised 5x. joint_vel raised more mildly. If task
+    # success drops too much, back these off; if still jittery, also lower the
+    # arm_action `scale` (0.5 -> ~0.2) in config/franka/joint_pos_env_cfg.py.
     action_rate = CurrTerm(
-        func=mdp.modify_reward_weight, params={"term_name": "action_rate", "weight": -1e-1, "num_steps": 10000}
+        func=mdp.modify_reward_weight, params={"term_name": "action_rate", "weight": -5e-1, "num_steps": 10000}
     )
 
     joint_vel = CurrTerm(
-        func=mdp.modify_reward_weight, params={"term_name": "joint_vel", "weight": -1e-1, "num_steps": 10000}
+        func=mdp.modify_reward_weight, params={"term_name": "joint_vel", "weight": -2.5e-1, "num_steps": 10000}
     )
 
 

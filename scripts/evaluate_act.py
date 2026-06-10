@@ -53,9 +53,10 @@ import gymnasium as gym
 import isaaclab_tasks  # noqa: F401
 import Lift.tasks  # noqa: F401
 
-# Add ACT to path
-sys.path.insert(0, "/workspace/frankapanda/Lift/act")
-sys.path.insert(0, "/workspace/frankapanda/Lift/act/detr")
+# Add ACT to path (repo root = parent of this script's dir; `act/` at <repo>/act).
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(REPO_ROOT, "act"))
+sys.path.insert(0, os.path.join(REPO_ROOT, "act", "detr"))
 from policy import ACTPolicy as OriginalACTPolicy
 
 
@@ -238,7 +239,7 @@ def get_camera_images(env) -> torch.Tensor:
     
     # Collect images from all cameras
     camera_images = []
-    camera_names = ['camera', 'camera2', 'camera3']  # Match training cameras
+    camera_names = ['camera', 'wrist']  # Match training cameras (scene + wrist)
     
     for cam_name in camera_names:
         if cam_name in scene.sensors:
