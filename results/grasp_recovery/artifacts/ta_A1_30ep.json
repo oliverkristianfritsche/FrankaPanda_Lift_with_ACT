@@ -1,0 +1,14 @@
+[
+  {
+    "epoch": 1,
+    "episodes": 30,
+    "place_success": 4,
+    "place_rate": 13.333333333333334,
+    "lift_success": 4,
+    "lift_rate": 13.333333333333334,
+    "success": 4,
+    "success_rate": 13.333333333333334,
+    "ckpt": "checkpoint_0001.pt",
+    "source": "Reconstructed 2026-07-05 from W&B run LiquidAI_Hackathon_05/frankapanda-grasp/2zglwuhm (eval_all_models), logged tables eval_results:v0 and eval_results_final:v0, row [actA_recovery, clean360+noisy360, epoch 1, temporal_agg, 30 ep, place 13, lift 13]. Counts recovered by exact inversion: 4/30 is the only count that displays as 13% at 30 episodes under the eval script's {:.0f} rounding."
+  }
+]

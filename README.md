@@ -3,7 +3,7 @@
 A Franka Panda learns to grasp a cube and place it on a randomized airborne target,
 from two cameras plus proprioception, in Isaac Lab. A state-based PPO expert generates
 demonstrations; an ACT (Action Chunking Transformer) vision policy is distilled from
-them. Getting the student from 0% to 80% grasp / 60% placed came down to two
+them. Getting the student from 0% to 80% grasp / 60% placed (40/50, 30/50) came down to two
 instrumented findings: a missing goal input, and missing corrective data that the
 default inference mode was hiding.
 
@@ -13,16 +13,21 @@ default inference mode was hiding.
 
 ![The task](media/task_schematic.png)
 
+The task: grasp the cube and carry it to a floating goal. The cube spawns uniformly
+in x +/- 10 cm, y +/- 25 cm on the table; the goal resamples every episode across
+x 0.4 to 0.6, y -0.25 to 0.25, z 0.25 to 0.5 m. Episodes run 5 s at 50 Hz (250 steps);
+grasp = cube lifted at least 10 cm, placed = cube within 5 cm of the goal.
+
 ## Results
 
 | demos | action averaging | re-plan every 10 |
 | --- | --- | --- |
-| noise-free, long | 16% / 16% (50 ep) | 7% / 7% |
-| noise-free, short | 7% / 7% | 17% / 10% |
-| noise-injected, long | 13% / 13% | 42% / 42% (50 ep) |
-| **noise-injected, short (final)** | 17% / 17% | **80% / 60% (50 ep)** |
+| noise-free, long | 8/50 · 8/50 | 2/30 · 2/30 |
+| noise-free, short | 2/30 · 2/30 | 5/30 · 3/30 |
+| noise-injected, long | 4/30 · 4/30 | 21/50 · 21/50 |
+| **noise-injected, short (final)** | 5/30 · 5/30 | **40/50 · 30/50** |
 
-*grasp % / placed-on-target %; 30 episodes unless marked.*
+*grasped · placed-on-target, successes/episodes.*
 
 ![Results](media/grasp_results_bars.png)
 
@@ -64,7 +69,7 @@ evaluation, not loss.
 **4. Inference: re-plan, do not average.** ACT's default temporal ensembling averages
 about 50 overlapping action plans weighted toward the oldest, which smothers reactive
 corrections. Re-planning every 10 steps (`--query_freq 10`) lets them through: the
-same checkpoint jumps from 17% to 83% grasp on this switch alone.
+same checkpoint jumps from 17% (5/30) to 80% (40/50) grasp on this switch alone.
 
 ## Diagnosis, before and after
 
@@ -81,6 +86,9 @@ worth noting: the noise-free models reach 3 to 5x lower training loss while gras
 ![Success vs checkpoint](media/grasp_success_vs_epoch.png)
 
 ## Quickstart
+
+Pinned: Isaac Lab 2.1.0 with bundled Isaac Sim 4.5 (the `nvcr.io/nvidia/isaac-lab:2.1.0`
+container); demos, training, and eval all ran on one NVIDIA L40S.
 
 ```bash
 git clone https://github.com/oliverkristianfritsche/FrankaPanda_Lift_with_ACT.git
